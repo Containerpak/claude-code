@@ -1,0 +1,66 @@
+# A package built from a deb is carried forward by apt on every rebuild. This
+# one pins a binary by checksum, so nothing moves it unless something goes and
+# looks. That is this: it reads the published release, and when it differs from
+# what is pinned it rewrites the pin and pushes, which is what builds the image.
+name: Follow upstream
+
+on:
+  schedule:
+    - cron: '20 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  follow:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read the published release
+        id: upstream
+        run: |
+          set -euo pipefail
+          base=https://downloads.claude.ai/claude-code-releases
+          version="$(curl -fsSL "$base/latest")"
+          case "$version" in
+            [0-9]*.[0-9]*.[0-9]*) ;;
+            *) echo "::error::upstream answered something that is not a version"; exit 1 ;;
+          esac
+          manifest="$(curl -fsSL "$base/$version/manifest.json")"
+          amd64="$(printf '%s' "$manifest" | jq -r '.platforms["linux-x64"].checksum')"
+          arm64="$(printf '%s' "$manifest" | jq -r '.platforms["linux-arm64"].checksum')"
+          for value in "$amd64" "$arm64"; do
+            [ "${#value}" -eq 64 ] || { echo "::error::a platform has no sha256"; exit 1; }
+          done
+          {
+            echo "version=$version"
+            echo "amd64=$amd64"
+            echo "arm64=$arm64"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Move the pin
+        env:
+          VERSION: ${{ steps.upstream.outputs.version }}
+          AMD64: ${{ steps.upstream.outputs.amd64 }}
+          ARM64: ${{ steps.upstream.outputs.arm64 }}
+        run: |
+          set -euo pipefail
+          current="$(sed -n 's/^ARG CLAUDE_VERSION=//p' Containerfile)"
+          if [ "$current" = "$VERSION" ]; then
+            echo "already at $VERSION"
+            exit 0
+          fi
+          sed -i \
+            -e "s/^ARG CLAUDE_VERSION=.*/ARG CLAUDE_VERSION=${VERSION}/" \
+            -e "s/^ARG CLAUDE_SHA256_AMD64=.*/ARG CLAUDE_SHA256_AMD64=${AMD64}/" \
+            -e "s/^ARG CLAUDE_SHA256_ARM64=.*/ARG CLAUDE_SHA256_ARM64=${ARM64}/" \
+            Containerfile
+          jq --arg version "$VERSION" '.version = $version' cpak.json > cpak.json.next
+          mv cpak.json.next cpak.json
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Containerfile cpak.json
+          git commit -m "chore: follow upstream ${VERSION}"
+          git push

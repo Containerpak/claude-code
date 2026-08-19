@@ -1,0 +1,46 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Containerpak/cpak/v2/schema/manifest-v2.json",
+  "manifest_version": "2.0",
+  "name": "Claude Code",
+  "description": "Anthropic's coding agent for the terminal.",
+  "version": "2.1.235",
+  "image": "ghcr.io/containerpak/claude-code:main",
+  "binaries": [
+    "/usr/bin/claude"
+  ],
+  "desktop_entries": [],
+  "dependencies": [],
+  "addons": [
+    "github.com/containerpak/sdk-scm",
+    "github.com/containerpak/sdk-cli",
+    "github.com/containerpak/sdk-go",
+    "github.com/containerpak/sdk-node-lts",
+    "github.com/containerpak/sdk-python",
+    "github.com/containerpak/sdk-rust",
+    "github.com/containerpak/sdk-native",
+    "github.com/containerpak/sdk-java",
+    "github.com/containerpak/sdk-php",
+    "github.com/containerpak/sdk-ruby",
+    "github.com/containerpak/sdk-lua",
+    "github.com/containerpak/sdk-zig",
+    "github.com/containerpak/sdk-vala",
+    "github.com/containerpak/sdk-qt",
+    "github.com/containerpak/sdk-vulkan",
+    "github.com/containerpak/sdk-mingw"
+  ],
+  "idle_time": 0,
+  "override": {
+    "filesystem": [
+      {
+        "path": "home",
+        "access": "read-write"
+      }
+    ],
+    "socketSshAgent": true,
+    "socketGpgAgent": true,
+    "network": true,
+    "env": [
+      "DISABLE_AUTOUPDATER=1"
+    ]
+  }
+}

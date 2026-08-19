@@ -1,0 +1,89 @@
+name: Publish
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - Containerfile
+      - cpak.json
+      - .github/workflows/docker-publish.yml
+  schedule:
+    - cron: '30 4 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+  attestations: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-qemu-action@v3
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/containerpak/claude-code
+          tags: |
+            type=raw,value=main
+            type=sha,prefix=sha-
+
+      - id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Containerfile
+          pull: true
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: mode=max
+          sbom: true
+
+      - name: Verify SDK exports
+        run: |
+          for platform in linux/amd64 linux/arm64; do
+            docker run --rm --platform "$platform" --entrypoint test \
+              ghcr.io/containerpak/claude-code:main -x /usr/bin/claude
+            # The package is the only thing that updates it, so an image whose
+            # tool would replace itself is a broken package and not a warning.
+            docker run --rm --platform "$platform" --entrypoint sh \
+              ghcr.io/containerpak/claude-code:main -c 'test "$DISABLE_AUTOUPDATER" = 1'
+          done
+
+      - uses: sigstore/cosign-installer@d7543c93d881b35a8faa02e8e3605f69b7a1ce62
+
+      - name: Install cpak-sign
+        run: |
+          curl -fsSLO https://github.com/Containerpak/cpak/releases/latest/download/cpak-sign-linux-amd64
+          install -Dm755 cpak-sign-linux-amd64 /usr/local/bin/cpak-sign
+
+      - name: Sign the package state
+        env:
+          CPAK_REGISTRY_USERNAME: ${{ github.actor }}
+          CPAK_REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          repository="$(printf '%s' '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')"
+          cpak-sign state \
+            --origin "github.com/${repository}" \
+            --image "ghcr.io/${repository}:main" \
+            --generation "${{ github.run_number }}"
+          cosign sign-blob --yes --new-bundle-format=true \
+            --bundle cpak-state.sigstore.json cpak-state
+          cpak-sign attach --image "ghcr.io/${repository}"
