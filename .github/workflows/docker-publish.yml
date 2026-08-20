@@ -59,12 +59,8 @@ jobs:
       - name: Verify SDK exports
         run: |
           for platform in linux/amd64 linux/arm64; do
-            docker run --rm --platform "$platform" --entrypoint test \
-              ghcr.io/containerpak/claude-code:main -x /usr/bin/claude
-            # The package is the only thing that updates it, so an image whose
-            # tool would replace itself is a broken package and not a warning.
             docker run --rm --platform "$platform" --entrypoint sh \
-              ghcr.io/containerpak/claude-code:main -c 'test "$DISABLE_AUTOUPDATER" = 1'
+              ghcr.io/containerpak/claude-code:main -c 'test -L /usr/bin/claude && test ! -e /package/claude && test "$DISABLE_AUTOUPDATER" = 1'
           done
 
       - uses: sigstore/cosign-installer@d7543c93d881b35a8faa02e8e3605f69b7a1ce62

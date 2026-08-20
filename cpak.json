@@ -5,6 +5,24 @@
   "description": "Anthropic's coding agent for the terminal.",
   "version": "2.1.237",
   "image": "ghcr.io/containerpak/claude-code:main",
+  "runtime_sources": [
+    {
+      "name": "claude-code-linux-x64-2.1.237.tgz",
+      "url": "https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/-/claude-code-linux-x64-2.1.237.tgz",
+      "sha256": "173104c275987e5b46d8138cc78dd139460cc4e1b15fad896dcc236e490ab628",
+      "size": 100055185,
+      "installer": "tar",
+      "architecture": "amd64"
+    },
+    {
+      "name": "claude-code-linux-arm64-2.1.237.tgz",
+      "url": "https://registry.npmjs.org/@anthropic-ai/claude-code-linux-arm64/-/claude-code-linux-arm64-2.1.237.tgz",
+      "sha256": "6d4e8bad1f1792a950fc03ce2dd5133e99f79645e61e526b4abbaa168daca2c0",
+      "size": 99664158,
+      "installer": "tar",
+      "architecture": "arm64"
+    }
+  ],
   "binaries": [
     "/usr/bin/claude"
   ],
