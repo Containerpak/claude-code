@@ -4,9 +4,9 @@ COPY cpak-apt.conf /etc/apt/apt.conf.d/90cpak
 COPY --chmod=0755 cpak-clean-junk /usr/bin/cpak-clean-junk
 
 ARG TARGETARCH
-ARG CLAUDE_VERSION=2.1.235
-ARG CLAUDE_SHA256_AMD64=bfcf0ae2dbf94b2b6a106074aabf3938b9a10889c3b678e4cb5a00c03274d5d5
-ARG CLAUDE_SHA256_ARM64=cff9592faa292db0f6ac21874f151b8c3d44e23bf0ab9fd1bcca95edc3469549
+ARG CLAUDE_VERSION=2.1.237
+ARG CLAUDE_SHA256_AMD64=73975167f0108693cf6fd6614994781657ebb8456ebef5d247458734abfb3916
+ARG CLAUDE_SHA256_ARM64=a701cfb6bb4703abc6f3ce47508c878ca8158ebdbeacd5c35c7d510c7bc70177
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends ca-certificates curl && \
