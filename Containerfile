@@ -1,7 +1,4 @@
-FROM ubuntu:26.04
-
-COPY cpak-apt.conf /etc/apt/apt.conf.d/90cpak
-COPY --chmod=0755 cpak-clean-junk /usr/bin/cpak-clean-junk
+FROM ghcr.io/containerpak/base:main
 
 ARG TARGETARCH
 ARG CLAUDE_VERSION=2.1.237
