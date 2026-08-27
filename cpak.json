@@ -1,10 +1,10 @@
 {
-  "$schema": "https://raw.githubusercontent.com/Containerpak/cpak/v2/schema/manifest-v2.json",
-  "manifest_version": "2.0",
+  "$schema": "https://raw.githubusercontent.com/Containerpak/cpak/v2/schema/manifest-v3.json",
+  "manifest_version": "3.0",
   "name": "Claude Code",
   "description": "Anthropic's coding agent for the terminal.",
   "version": "2.1.247",
-  "image": "ghcr.io/containerpak/claude-code:main",
+  "image": "ghcr.io/containerpak/claude-code@sha256:6274f2dd9a907bb8bef4bf56d4e1466387e3eb17315edabd13e731976ddcacf9",
   "runtime_sources": [
     {
       "name": "claude-code-linux-x64-2.1.247.tgz",
@@ -48,16 +48,11 @@
   ],
   "idle_time": 0,
   "override": {
-    "socketX11": false,
     "socketWayland": false,
     "socketPulseAudio": false,
-    "socketSessionBus": false,
-    "socketSystemBus": false,
     "socketSshAgent": true,
     "socketCups": false,
     "socketGpgAgent": true,
-    "socketAtSpiBus": false,
-    "socketBluetooth": false,
     "deviceDri": false,
     "deviceKvm": false,
     "deviceShm": false,
