@@ -4,7 +4,7 @@
   "name": "Claude Code",
   "description": "Anthropic's coding agent for the terminal.",
   "version": "2.1.263",
-  "image": "ghcr.io/containerpak/claude-code@sha256:25307df88b939514a7f616a4e754ac4f6d96ce25c09a35fb50708482e222251a",
+  "image": "ghcr.io/containerpak/claude-code@sha256:0e74da7110bf8d776d734cb0f40b09528de9863d7b1502c2084434c583b50a01",
   "runtime_sources": [
     {
       "name": "claude-code-linux-x64-2.1.263.tgz",
