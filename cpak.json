@@ -3,22 +3,22 @@
   "manifest_version": "3.0",
   "name": "Claude Code",
   "description": "Anthropic's coding agent for the terminal.",
-  "version": "2.1.301",
+  "version": "2.1.302",
   "image": "ghcr.io/containerpak/claude-code@sha256:d2e4f4440179542e70e3b6adf9dc82aeb68e0d44e3aaba15fd7f004b7a17f237",
   "runtime_sources": [
     {
-      "name": "claude-code-linux-x64-2.1.301.tgz",
-      "url": "https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/-/claude-code-linux-x64-2.1.301.tgz",
-      "sha256": "a7ffd61e7784e6dda864a31e934cececc050f106015201cb3db4abb59c781c57",
-      "size": 119872477,
+      "name": "claude-code-linux-x64-2.1.302.tgz",
+      "url": "https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/-/claude-code-linux-x64-2.1.302.tgz",
+      "sha256": "3bc5817207175089cbe0a02a989bdf35b228497f8f76d3c3ba13d568dc8f25e2",
+      "size": 129008778,
       "installer": "tar",
       "architecture": "amd64"
     },
     {
-      "name": "claude-code-linux-arm64-2.1.301.tgz",
-      "url": "https://registry.npmjs.org/@anthropic-ai/claude-code-linux-arm64/-/claude-code-linux-arm64-2.1.301.tgz",
-      "sha256": "b85a88e296a63ee407f7755eb9a1b071b2529f2adc39894148c127827a58e7d0",
-      "size": 120171973,
+      "name": "claude-code-linux-arm64-2.1.302.tgz",
+      "url": "https://registry.npmjs.org/@anthropic-ai/claude-code-linux-arm64/-/claude-code-linux-arm64-2.1.302.tgz",
+      "sha256": "8a3be117b2d679bba24ec14fc64906280c6a993944a036a70c4b675f5ada5e33",
+      "size": 129489471,
       "installer": "tar",
       "architecture": "arm64"
     }
